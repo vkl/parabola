@@ -103,9 +103,26 @@
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(centerX, 0);
-            ctx.lineTo(centerX, canvas.height);
+            ctx.lineTo(centerX, canvas.height);  // y-axis
             ctx.moveTo(0, centerY);
-            ctx.lineTo(canvas.width, centerY);
+            ctx.lineTo(canvas.width, centerY);  // x-axis
+            ctx.stroke();
+
+            // Draw ticks on X-axis
+            for (let i = -10; i <= 10; i++) {
+                let tickX = centerX + i * scaleX;
+                ctx.moveTo(tickX, centerY - 5);
+                ctx.lineTo(tickX, centerY + 5);
+            }
+
+            // Draw ticks on Y-axis
+            for (let j = -10; j <= 10; j++) {
+                let tickY = centerY - j * scaleY;
+                ctx.moveTo(centerX - 5, tickY);
+                ctx.lineTo(centerX + 5, tickY);
+            }
+
+            ctx.strokeStyle = '#000'; // Reset color to black for axis ticks
             ctx.stroke();
 
             // Plot the parabola
@@ -120,6 +137,28 @@
             }
 
             ctx.strokeStyle = 'blue';
+            ctx.stroke();
+
+            // Calculate the focus and directrix
+            const h = -b / (2 * a); // Focus x-coordinate
+            const k = (1 - b * b) / (4 * a); // Focus y-coordinate and directrix (y = k)
+
+            // Draw the directrix (red dashed line)
+            ctx.setLineDash([5, 5]);  // Dashed line for directrix
+            const directrixY = centerY - k * scaleY;
+            ctx.beginPath();
+            ctx.moveTo(0, directrixY);
+            ctx.lineTo(canvas.width, directrixY);
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
+            ctx.setLineDash([]);  // Reset dashed line style
+
+            // Draw the focus point (red dot)
+            ctx.beginPath();
+            ctx.arc(centerX + h * scaleX, centerY - k * scaleY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.strokeStyle = 'red';
             ctx.stroke();
         }
 
