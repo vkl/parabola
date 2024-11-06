@@ -80,6 +80,10 @@
         const ctx = canvas.getContext('2d');
 
         let a = 1, b = 0, c = 0;
+        let scaleX = 30; // Pixels per unit on x-axis
+        let scaleY = 30; // Pixels per unit on y-axis
+        let centerX = canvas.width / 2;
+        let centerY = canvas.height / 2;
 
         // Get sliders and value displays
         const aKnob = document.getElementById('aKnob');
@@ -92,11 +96,6 @@
         // Function to update the quadratic plot
         function plotParabola() {
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const scaleX = 30; // Pixels per unit on x-axis
-            const scaleY = 30; // Pixels per unit on y-axis
 
             // Set up the axis
             ctx.strokeStyle = '#000';
@@ -178,6 +177,22 @@
         cKnob.addEventListener('input', function() {
             c = parseFloat(cKnob.value);
             cValue.textContent = c.toFixed(1);
+            plotParabola();
+        });
+
+        // Zoom functionality using mouse scroll
+        canvas.addEventListener('wheel', function(event) {
+            event.preventDefault();
+
+            // Zoom in or out depending on the wheel direction
+            if (event.deltaY < 0) {
+                scaleX *= 1.1; // Zoom in (increase scale)
+                scaleY *= 1.1; // Zoom in (increase scale)
+            } else {
+                scaleX /= 1.1; // Zoom out (decrease scale)
+                scaleY /= 1.1; // Zoom out (decrease scale)
+            }
+
             plotParabola();
         });
 
