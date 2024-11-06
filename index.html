@@ -144,7 +144,7 @@
 
             // Adjust the vertical position of the focus and directrix based on c
             const focusY = k + c;  // Adjust focus by c
-            const directrixY = a > 0 ? centerY - (k + c + 1 / (4 * a)) * scaleY : centerY - (k + c - 1 / (4 * a)) * scaleY; // Directrix is below for a > 0 and above for a < 0
+            const directrixY = a < 0 ? centerY - (k + c + 1 / (4 * a)) * scaleY : centerY - (k + c - 1 / (4 * a)) * scaleY; // Directrix is below for a > 0 and above for a < 0
 
             // Draw the directrix (red dashed line)
             ctx.setLineDash([5, 5]);  // Dashed line for directrix
