@@ -1,204 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadratic Equation Plotter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f0f0f0;
-        }
-        
-        h1 {
-            text-align: center;
-        }
+// Function to update the quadratic plot
+function plotParabola() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
-        .slider-container {
-            margin: 20px;
-            width: 80%;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-        }
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const scaleX = 30; // Pixels per unit on x-axis
+    const scaleY = 30; // Pixels per unit on y-axis
 
-        .slider-container div {
-            display: flex;
-            align-items: center;
-        }
+    // Set up the axis
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX, 0);
+    ctx.lineTo(centerX, canvas.height);  // y-axis
+    ctx.moveTo(0, centerY);
+    ctx.lineTo(canvas.width, centerY);  // x-axis
+    ctx.stroke();
 
-        .slider-container label {
-            margin-right: 10px;
-        }
+    // Draw ticks on X-axis
+    for (let i = -10; i <= 10; i++) {
+        let tickX = centerX + i * scaleX;
+        ctx.moveTo(tickX, centerY - 5);
+        ctx.lineTo(tickX, centerY + 5);
+    }
 
-        .slider-container input {
-            width: 200px;
-        }
+    // Draw ticks on Y-axis
+    for (let j = -10; j <= 10; j++) {
+        let tickY = centerY - j * scaleY;
+        ctx.moveTo(centerX - 5, tickY);
+        ctx.lineTo(centerX + 5, tickY);
+    }
 
-        #plotCanvas {
-            border: 1px solid #000;
-            margin-top: 20px;
-        }
+    ctx.strokeStyle = '#000'; // Reset color to black for axis ticks
+    ctx.stroke();
 
-        #aValue, #bValue, #cValue {
-            margin-left: 10px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>Quadratic Equation Plotter</h1>
-
-    <div class="slider-container">
-        <div>
-            <label for="aKnob">a:</label>
-            <input type="range" id="aKnob" min="-5" max="5" step="0.1" value="1">
-            <span id="aValue">1</span>
-        </div>
-        <div>
-            <label for="bKnob">b:</label>
-            <input type="range" id="bKnob" min="-5" max="5" step="0.1" value="0">
-            <span id="bValue">0</span>
-        </div>
-        <div>
-            <label for="cKnob">c:</label>
-            <input type="range" id="cKnob" min="-5" max="5" step="0.1" value="0">
-            <span id="cValue">0</span>
-        </div>
-    </div>
-
-    <canvas id="plotCanvas" width="500" height="500"></canvas>
-
-    <script>
-        const canvas = document.getElementById('plotCanvas');
-        const ctx = canvas.getContext('2d');
-
-        let a = 1, b = 0, c = 0;
-        let scaleX = 30; // Pixels per unit on x-axis
-        let scaleY = 30; // Pixels per unit on y-axis
-        let centerX = canvas.width / 2;
-        let centerY = canvas.height / 2;
-
-        // Get sliders and value displays
-        const aKnob = document.getElementById('aKnob');
-        const bKnob = document.getElementById('bKnob');
-        const cKnob = document.getElementById('cKnob');
-        const aValue = document.getElementById('aValue');
-        const bValue = document.getElementById('bValue');
-        const cValue = document.getElementById('cValue');
-
-        // Function to update the quadratic plot
-        function plotParabola() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
-            // Set up the axis
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(centerX, 0);
-            ctx.lineTo(centerX, canvas.height);  // y-axis
-            ctx.moveTo(0, centerY);
-            ctx.lineTo(canvas.width, centerY);  // x-axis
-            ctx.stroke();
-
-            // Draw ticks on X-axis
-            for (let i = -10; i <= 10; i++) {
-                let tickX = centerX + i * scaleX;
-                ctx.moveTo(tickX, centerY - 5);
-                ctx.lineTo(tickX, centerY + 5);
-            }
-
-            // Draw ticks on Y-axis
-            for (let j = -10; j <= 10; j++) {
-                let tickY = centerY - j * scaleY;
-                ctx.moveTo(centerX - 5, tickY);
-                ctx.lineTo(centerX + 5, tickY);
-            }
-
-            ctx.strokeStyle = '#000'; // Reset color to black for axis ticks
-            ctx.stroke();
-
-            // Plot the parabola
-            ctx.beginPath();
-            ctx.moveTo(0, centerY - (a * Math.pow(-centerX / scaleX, 2) + b * (-centerX / scaleX) + c) * scaleY);
-
-            for (let x = -centerX; x < centerX; x++) {
-                const fx = a * Math.pow(x / scaleX, 2) + b * (x / scaleX) + c;
-                const plotX = x + centerX;
-                const plotY = centerY - fx * scaleY;
-                ctx.lineTo(plotX, plotY);
-            }
-
-            ctx.strokeStyle = 'blue';
-            ctx.stroke();
-
-            // Calculate the focus and directrix
-            const h = -b / (2 * a); // Focus x-coordinate
-            const k = (1 - b * b) / (4 * a); // Focus y-coordinate and directrix (y = k)
-
-            // Draw the directrix (red dashed line)
-            ctx.setLineDash([5, 5]);  // Dashed line for directrix
-            const directrixY = centerY - k * scaleY;
-            ctx.beginPath();
-            ctx.moveTo(0, directrixY);
-            ctx.lineTo(canvas.width, directrixY);
-            ctx.strokeStyle = 'red';
-            ctx.stroke();
-            ctx.setLineDash([]);  // Reset dashed line style
-
-            // Draw the focus point (red dot)
-            ctx.beginPath();
-            ctx.arc(centerX + h * scaleX, centerY - k * scaleY, 5, 0, Math.PI * 2);
-            ctx.fillStyle = 'red';
-            ctx.fill();
-            ctx.strokeStyle = 'red';
-            ctx.stroke();
-        }
-
-        // Event listeners for sliders
-        aKnob.addEventListener('input', function() {
-            a = parseFloat(aKnob.value);
-            aValue.textContent = a.toFixed(1);
-            plotParabola();
-        });
-
-        bKnob.addEventListener('input', function() {
-            b = parseFloat(bKnob.value);
-            bValue.textContent = b.toFixed(1);
-            plotParabola();
-        });
-
-        cKnob.addEventListener('input', function() {
-            c = parseFloat(cKnob.value);
-            cValue.textContent = c.toFixed(1);
-            plotParabola();
-        });
-
-        // Zoom functionality using mouse scroll
-        canvas.addEventListener('wheel', function(event) {
-            event.preventDefault();
-
-            // Zoom in or out depending on the wheel direction
-            if (event.deltaY < 0) {
-                scaleX *= 1.1; // Zoom in (increase scale)
-                scaleY *= 1.1; // Zoom in (increase scale)
-            } else {
-                scaleX /= 1.1; // Zoom out (decrease scale)
-                scaleY /= 1.1; // Zoom out (decrease scale)
-            }
-
-            plotParabola();
-        });
-
-        // Initial plot
-        plotParabola();
-    </script>
-
-</body>
-</html>
+    // Plot the parabola
+    ctx.beginPath();
+    ctx.moveTo(0, centerY - (a * Math.pow(-centerX / scaleX,
