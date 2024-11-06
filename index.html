@@ -138,13 +138,17 @@
             ctx.strokeStyle = 'blue';
             ctx.stroke();
 
-            // Calculate the focus and directrix
+            // Calculate the vertex (h, k)
             const h = -b / (2 * a); // Focus x-coordinate
             const k = (1 - b * b) / (4 * a); // Focus y-coordinate
 
             // Adjust the vertical position of the focus and directrix based on c
             const focusY = k + c;  // Adjust focus by c
-            const directrixY = a < 0 ? centerY - (k + c + 1 / (4 * a)) * scaleY : centerY - (k + c - 1 / (4 * a)) * scaleY; // Directrix is below for a > 0 and above for a < 0
+
+            // Calculate the directrix position
+            const directrixY = a > 0 
+                ? centerY - (k - 1 / (4 * a) + c) * scaleY  // For upward-opening parabola
+                : centerY - (k + 1 / (4 * a) + c) * scaleY; // For downward-opening parabola
 
             // Draw the directrix (red dashed line)
             ctx.setLineDash([5, 5]);  // Dashed line for directrix
