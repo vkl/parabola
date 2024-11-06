@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Equation Plotter</title>
+    <link href="https://cdn.jsdelivr.net/npm/rc-slider@10.0.0/dist/rc-slider.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .slider-container {
+            margin: 20px;
+            width: 80%;
+        }
+        .knob-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        #plot {
+            width: 80%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Quadratic Equation Plotter</h1>
+
+    <div class="slider-container">
+        <div>
+            <span class="knob-label">a:</span>
+            <input type="range" id="aKnob" min="-5" max="5" step="0.1" value="1">
+            <span id="aValue">1</span>
+        </div>
+        <div>
+            <span class="knob-label">b:</span>
+            <input type="range" id="bKnob" min="-5" max="5" step="0.1" value="0">
+            <span id="bValue">0</span>
+        </div>
+        <div>
+            <span class="knob-label">c:</span>
+            <input type="range" id="cKnob" min="-5" max="5" step="0.1" value="0">
+            <span id="cValue">0</span>
+        </div>
+    </div>
+
+    <div id="plot"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/rc-slider@10.0.0/dist/rc-slider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js"></script>
+
+    <script>
+        // Initial quadratic equation values
+        let a = 1, b = 0, c = 0;
+
+        // Get elements
+        const aKnob = document.getElementById("aKnob");
+        const bKnob = document.getElementById("bKnob");
+        const cKnob = document.getElementById("cKnob");
+        const aValue = document.getElementById("aValue");
+        const bValue = document.getElementById("bValue");
+        const cValue = document.getElementById("cValue");
+
+        // Plot function
+        function plotParabola() {
+            const xValues = [];
+            const yValues = [];
+            for (let x = -10; x <= 10; x += 0.1) {
+                const y = a * x * x + b * x + c;
+                xValues.push(x);
+                yValues.push(y);
+            }
+
+            const trace = {
+                x: xValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines',
+                line: {color: 'blue'}
+            };
+
+            const layout = {
+                title: `f(x) = ${a}x² + ${b}x + ${c}`,
+                xaxis: {title: 'x'},
+                yaxis: {title: 'f(x)', rangemode: 'tozero'}
+            };
+
+            Plotly.newPlot('plot', [trace], layout);
+        }
+
+        // Event listeners for knobs
+        aKnob.addEventListener('input', function() {
+            a = parseFloat(aKnob.value);
+            aValue.textContent = a.toFixed(1);
+            plotParabola();
+        });
+
+        bKnob.addEventListener('input', function() {
+            b = parseFloat(bKnob.value);
+            bValue.textContent = b.toFixed(1);
+            plotParabola();
+        });
+
+        cKnob.addEventListener('input', function() {
+            c = parseFloat(cKnob.value);
+            cValue.textContent = c.toFixed(1);
+            plotParabola();
+        });
+
+        // Initial plot
+        plotParabola();
+    </script>
+
+</body>
+</html>
